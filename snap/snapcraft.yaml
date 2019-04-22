@@ -1,47 +1,40 @@
 name: appium-desktop
-version: 
-summary: 
-description: |
-  
+version: 2.0.0
+summary: Appium Desktop Client for Linux
+description: | 
+ An Appium Server and Inspector in Desktop GUIs. 
 confinement: strict
-grade: devel
+grade: stable
+icon: snap/gui/appium.png
 
 apps:
   appium-desktop:
-    command: desktop-launch "$SNAP/appium-desktop/electron-quick-start"
+    command: env TMPDIR=$XDG_RUNTIME_DIR desktop-launch $SNAP/appium-desktop
     plugs:
-    - browser-sandbox
-    - network
-    - network-bind
-    - opengl
-    - pulseaudio
-    - wayland
-    - x11
-
-plugs:
-  browser-sandbox:
-    interface: browser-support
-    allow-sandbox: true
-
+      - desktop
+      - desktop-legacy
+      - home
+      - x11
+      - unity7
+      - browser-support
+      - network
+      - gsettings
+      - pulseaudio
+      - opengl
+      
 parts:
-  appium-desktop:
-    plugin: nodejs
-    source: https://github.com/electron/electron-quick-start.git
-    after: [desktop-gtk2]
-    override-build: |
-        case $SNAPCRAFT_ARCH_TRIPLET in
-          "i386-linux-gnu") ARCH="ia32";;
-          "x86_64-linux-gnu") ARCH="x64";;
-          "arm-linux-gnueabihf") ARCH="armv7l";;
-          "aarch64-linux-gnu") ARCH="arm64";;
-          *) echo "ERROR: electron does not support the '$SNAPCRAFT_ARCH_TRIPLET' architecture" && exit 1;;
-        esac
-        npm install electron-packager &&
-        ./node_modules/.bin/electron-packager . --overwrite --platform=linux --arch=$ARCH --output=release-build --prune=true
-        cp -v -R ./electron-quick-start-linux-$ARCH $SNAPCRAFT_PART_INSTALL/appium-desktop
+  app:
+    plugin: dump
     stage-packages:
-    - libasound2
-    - libgconf-2-4
-    - libnss3
-    - libxss1
-    - libxtst6
+      - libasound2
+      - libgconf2-4
+      - libnotify4
+      - libnspr4
+      - libnss3
+      - libpcre3
+      - libpulse0
+      - libxss1
+      - libxtst6
+    source: dist/linux-unpacked
+    after:
+- desktop-gtk2
