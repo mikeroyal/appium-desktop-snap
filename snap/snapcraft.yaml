@@ -1,5 +1,5 @@
 name: appium-desktop
-version: 2.0.0
+version: 1.12.1
 summary: Appium Desktop Client for Linux
 description: | 
  An Appium Server and Inspector in Desktop GUIs. 
